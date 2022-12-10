@@ -19,8 +19,8 @@ const log = (message, title) => {
 };
 
 const addMovie = (json, resolutions, profile) => {
-  if (!json.downloaded) {
-    return log('Not downloaded. Skipping.', json.title);
+  if (!json.hasFile) {
+    return log('Not downloaded. Skipping.', JSON.stringify(json, null, 2));
   }
   const {
     title, titleSlug, tmdbId, year, movieFile: { quality: { quality: { resolution = '' } } },
@@ -42,15 +42,15 @@ const addMovie = (json, resolutions, profile) => {
       searchForMovie: true,
     },
   };
-  if (!resolutions.includes(resolution)) {
-    return log(`Resolution '${resolution}' is not a synced resolution: ${resolutions}`, title);
+  if (!resolutions.includes(resolution.toString())) {
+    return log(`Resolution '${resolution.toString()}' is not a synced resolution: ${resolutions}`, title);
   }
-  return axios.post(`${dst.host}/api/movie?apikey=${dst.apikey}`, payload)
+  return axios.post(`${dst.host}/api/v3/movie?apikey=${dst.apikey}`, payload)
     .then(() => log('Synced!', title))
     .catch(() => log('Unable to add movie', title));
 };
 
-const sync = ({ id, resolutions, profile }) => axios.get(`${src.host}/api/movie/${id}?apikey=${src.apikey}`)
+const sync = ({ id, resolutions, profile }) => axios.get(`${src.host}/api/v3/movie/${id}?apikey=${src.apikey}`)
   .then((data) => {
     if (data.message === 'Not Found') {
       return log(`Movie id not found: ${id}`);
@@ -58,7 +58,7 @@ const sync = ({ id, resolutions, profile }) => axios.get(`${src.host}/api/movie/
     return addMovie(data.data, resolutions, profile);
   });
 
-const importAll = ({ resolutions, profile }) => axios.get(`${src.host}/api/movie?apikey=${src.apikey}`)
+const importAll = ({ resolutions, profile }) => axios.get(`${src.host}/api/v3/movie?apikey=${src.apikey}`)
   .then(data => data.data.map(d => addMovie(d, resolutions, profile)).filter(movie => movie));
 
 module.exports = { sync, importAll };
