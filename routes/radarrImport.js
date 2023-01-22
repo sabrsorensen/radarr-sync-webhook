@@ -1,5 +1,5 @@
 const express = require('express');
-const { sync, importAll } = require('../sync.js');
+const { radarrSync, radarrImportAll } = require('../radarrSync.js');
 const validator = require('../validator');
 const { splitUrlParam, getUrlParam } = require('../util');
 
@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
     const { movie: { id = '' } } = req.body;
     const resolutions = splitUrlParam(req, 'resolutions');
     const profile = getUrlParam(req, 'profile');
-    const response = await sync({ id, resolutions, profile });
+    const response = await radarrSync({ id, resolutions, profile });
     res.send(response);
   } catch (e) {
     const message = 'Malformed webhook request';
@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
 router.post('/all', async (req, res) => {
   const resolutions = splitUrlParam(req, 'resolutions');
   const profile = getUrlParam(req, 'profile');
-  const response = await importAll({ resolutions, profile });
+  const response = await radarrImportAll({ resolutions, profile });
   res.send(response);
 });
 
@@ -32,8 +32,9 @@ router.post('/:id', async (req, res) => {
   const resolutions = splitUrlParam(req, 'resolutions');
   const profile = getUrlParam(req, 'profile');
   const { id } = req.params;
-  const response = await sync({ id, resolutions, profile });
+  const response = await radarrSync({ id, resolutions, profile });
   res.send(response);
 });
+
 
 module.exports = router;

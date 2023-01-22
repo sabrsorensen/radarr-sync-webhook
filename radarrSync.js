@@ -1,15 +1,15 @@
 const axios = require('axios');
 
 const src = {
-  host: process.env.SRC_HOST,
-  apikey: process.env.SRC_APIKEY,
-  root: process.env.SRC_ROOT,
+  host: process.env.RADARR_SRC_HOST,
+  apikey: process.env.RADARR_SRC_APIKEY,
+  root: process.env.RADARR_SRC_ROOT,
 };
 
 const dst = {
-  host: process.env.DST_HOST,
-  apikey: process.env.DST_APIKEY,
-  root: process.env.DST_ROOT,
+  host: process.env.RADARR_DST_HOST,
+  apikey: process.env.RADARR_DST_APIKEY,
+  root: process.env.RADARR_DST_ROOT,
 };
 
 const log = (message, title) => {
@@ -50,7 +50,7 @@ const addMovie = (json, resolutions, profile) => {
     .catch(() => log('Unable to add movie', title));
 };
 
-const sync = ({ id, resolutions, profile }) => axios.get(`${src.host}/api/v3/movie/${id}?apikey=${src.apikey}`)
+const radarrSync = ({ id, resolutions, profile }) => axios.get(`${src.host}/api/v3/movie/${id}?apikey=${src.apikey}`)
   .then((data) => {
     if (data.message === 'Not Found') {
       return log(`Movie id not found: ${id}`);
@@ -58,7 +58,7 @@ const sync = ({ id, resolutions, profile }) => axios.get(`${src.host}/api/v3/mov
     return addMovie(data.data, resolutions, profile);
   });
 
-const importAll = ({ resolutions, profile }) => axios.get(`${src.host}/api/v3/movie?apikey=${src.apikey}`)
+const radarrImportAll = ({ resolutions, profile }) => axios.get(`${src.host}/api/v3/movie?apikey=${src.apikey}`)
   .then(data => data.data.map(d => addMovie(d, resolutions, profile)).filter(movie => movie));
 
-module.exports = { sync, importAll };
+module.exports = { radarrSync, radarrImportAll };

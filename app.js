@@ -3,7 +3,8 @@ const path = require('path');
 const logger = require('morgan');
 
 const indexRouter = require('./routes/index');
-const importRouter = require('./routes/import');
+const sonarrImportRouter = require('./routes/sonarrImport');
+const radarrImportRouter = require('./routes/radarrImport');
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/import', importRouter);
+app.use('/import/sonarr', sonarrImportRouter);
+app.use('/import/radarr', radarrImportRouter);
 
 module.exports = app;
