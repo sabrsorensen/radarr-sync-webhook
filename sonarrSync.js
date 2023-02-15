@@ -38,6 +38,7 @@ const addSeries = (json, profile) => {
     qualityProfileId,
     seasons: [],
     images: [],
+    monitored: true,
     addOptions: {
       searchForMissingEpisodes: true,
       monitor: "all",
