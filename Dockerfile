@@ -1,4 +1,4 @@
-FROM node:10-slim
+FROM node:21-slim
 
 ARG BUILD_DATE="unknown"
 ARG COMMIT_AUTHOR="unknown"
